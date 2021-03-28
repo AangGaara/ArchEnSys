@@ -3,8 +3,8 @@ library(shinythemes)
 library(readxl)
 library(networkD3)
 
-ui <- fluidPage(theme = shinytheme("flatly"),
-                navbarPage("EnArch",
+ui <- fluidPage(theme = shinytheme("superhero"),
+                navbarPage("ArchEnSys",
                 tabPanel("General Data","Blank"),
                 tabPanel("Demand","Blank"),
                 tabPanel("Supply","Blank"),
