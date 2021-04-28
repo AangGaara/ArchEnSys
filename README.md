@@ -1,2 +1,2 @@
-# EnArch
-Energy Archipelago Model
+# ArchEnSys
+Archipelagic Energy System Model
