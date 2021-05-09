@@ -169,7 +169,28 @@ gdpr_nom_2011_2019    <- gdpr_nom_2011_2019 %>%  mutate(gdpr_nom = str_remove(gd
 
 
 # Population data ---------------------------------------------------------
+# it is dumb, no actual data were found for population between 2010-2019
+# therefore, calculated from population density (person / km2) x province area (km2)
+# province area
+#area_province_km2 <- read_excel("data_demand_forecast/population/area_province_km2.xls", range = "A5:AP40", col_names = TRUE)
+#  area_province_km2[2:41] <- NULL
+#  names(area_province_km2)[1] <- "Province"
+#  names(area_province_km2)[2] <- "area_km2"
+#  area_province_km2$Province <- toupper(area_province_km2$Province)
+#  area_province_km2$Province <- sub("KEPULAUAN", "KEP.", area_province_km2$Province, fixed = TRUE)
 
+#province population density
+#are you kidding me? 2011 and 2012 data are not available
+#population_density_province_2010_2014 <- read_excel("data_demand_forecast/population/population_density_2010_2014.xlsx", range = "A2:D37", col_names = TRUE)
+#  names(population_density_province_2010_2014)[1] <- "Province"
+#population_density_province_2015_2019 <- read_excel("data_demand_forecast/population/population_density_2015_2019.xlsx", range = "A2:D37", col_names = TRUE)
+#  names(population_density_province_2010_2014)[1] <- "Province"
+# data will be taken from: http://satudata.sumselprov.go.id/v3/data/index.php?v=Kelompok-Lainnya-Pilih&q=Data-View&s=193
+
+population_2015_2019 <- read_csv("data_demand_forecast/population/population_2015_2019.csv")
+  names(population_2015_2019)[1] <- "Province"
+  population_2015_2019$Province <- toupper(population_2015_2019$Province)
+  population_2015_2019$Province <- sub("KEPULAUAN", "KEP.", population_2015_2019$Province, fixed = TRUE)
 
 # Energy intensity data ---------------------------------------------------
 
