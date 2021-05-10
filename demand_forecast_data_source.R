@@ -12,164 +12,111 @@ Region_6 <- "NUSA TENGGARA"
 Region_7 <- "JAVA"
 Region_8 <- "NATIONAL"
 
-# Real GDPR data ----------------------------------------------------------------
-# all in million rupiah, 2010 based
-gdpr_const_2011 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2011.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2011[2:35] <- NULL
-  names(gdpr_const_2011)[1] <- "Province"
-  names(gdpr_const_2011)[2] <- "2011"
-  gdpr_const_2011$Province[35] <- "INDONESIA"
-  gdpr_const_2011 <- pivot_longer(gdpr_const_2011, cols = 2, names_to = "year", values_to = "gdpr")
+# Real GDP data ------------------------------------------------------------
+# all in billion rupiah
+          gdpr_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_production_2010_2011.xlsx", range = "A3:E38", col_names = TRUE)
+            gdpr_2010_2011[2:3] <- NULL
+            names(gdpr_2010_2011)[1] <- "Province"
+            names(gdpr_2010_2011)[2] <- "2010"
+            names(gdpr_2010_2011)[3] <- "2011"
+            gdpr_2010_2011 <- pivot_longer(gdpr_2010_2011, cols = 2:3, names_to = "year", values_to = "gdpr")
+          
+          gdpr_2012_2014 <- read_excel("data_demand_forecast/gdpr/gdpr_production_2012_2014.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_2012_2014[2:4] <- NULL
+            names(gdpr_2012_2014)[1] <- "Province"
+            names(gdpr_2012_2014)[2] <- "2012"
+            names(gdpr_2012_2014)[3] <- "2013"
+            names(gdpr_2012_2014)[4] <- "2014"
+            gdpr_2012_2014 <- pivot_longer(gdpr_2012_2014, cols = 2:4, names_to = "year", values_to = "gdpr")
+          
+            
+          gdpr_2015_2017 <- read_excel("data_demand_forecast/gdpr/gdpr_production_2015_2017.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_2015_2017[2:4] <- NULL
+            names(gdpr_2015_2017)[1] <- "Province"
+            names(gdpr_2015_2017)[2] <- "2015"
+            names(gdpr_2015_2017)[3] <- "2016"
+            names(gdpr_2015_2017)[4] <- "2017"
+            gdpr_2015_2017 <- pivot_longer(gdpr_2015_2017, cols = 2:4, names_to = "year", values_to = "gdpr")  
+            
+            
+          gdpr_2018_2020 <- read_excel("data_demand_forecast/gdpr/gdpr_production_2018_2020.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_2018_2020[2:4] <- NULL
+            names(gdpr_2018_2020)[1] <- "Province"
+            names(gdpr_2018_2020)[2] <- "2018"
+            names(gdpr_2018_2020)[3] <- "2019"
+            names(gdpr_2018_2020)[4] <- "2020"
+            gdpr_2018_2020 <- pivot_longer(gdpr_2018_2020, cols = 2:4, names_to = "year", values_to = "gdpr")
+          
+          #merge data
+          gdpr_2010_2020 <- rbind(gdpr_2010_2011,
+                                  gdpr_2012_2014,
+                                  gdpr_2015_2017,
+                                  gdpr_2018_2020)
+          
+          #remove all spaces, and convert comma to dot, replace "-" with 0
+          gdpr_2010_2020$gdpr <- sub(",", ".", gdpr_2010_2020$gdpr, fixed = TRUE)
+          gdpr_2010_2020$gdpr <- sub("-", "0", gdpr_2010_2020$gdpr, fixed = TRUE)
+          gdpr_2010_2020      <- gdpr_2010_2020 %>% mutate(gdpr = str_remove(gdpr, "\\s"))
+          gdpr_2010_2020      <- gdpr_2010_2020 %>% mutate(gdpr = str_remove(gdpr, "\\s"))
+          gdpr_2010_2020$gdpr <- as.numeric(gdpr_2010_2020$gdpr)
+          names(gdpr_2010_2020)[3] <- "gdpr_billion_idr"
+
+
+# GDPR per capita data ----------------------------------------------------
+          gdpr_percap_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_per_capita_production_2010_2011.xlsx", range = "A3:E38", col_names = TRUE)
+            gdpr_percap_2010_2011[2:3] <- NULL
+            names(gdpr_percap_2010_2011)[1] <- "Province"
+            names(gdpr_percap_2010_2011)[2] <- "2010"
+            names(gdpr_percap_2010_2011)[3] <- "2011"
+            gdpr_percap_2010_2011 <- pivot_longer(gdpr_percap_2010_2011, cols = 2:3, names_to = "year", values_to = "gdpr_percap")
+          
+          gdpr_percap_2012_2014 <- read_excel("data_demand_forecast/gdpr/gdpr_per_capita_production_2012_2014.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_percap_2012_2014[2:4] <- NULL
+            names(gdpr_percap_2012_2014)[1] <- "Province"
+            names(gdpr_percap_2012_2014)[2] <- "2012"
+            names(gdpr_percap_2012_2014)[3] <- "2013"
+            names(gdpr_percap_2012_2014)[4] <- "2014"
+            gdpr_percap_2012_2014 <- pivot_longer(gdpr_percap_2012_2014, cols = 2:4, names_to = "year", values_to = "gdpr_percap")
+          
+          gdpr_percap_2015_2017 <- read_excel("data_demand_forecast/gdpr/gdpr_per_capita_production_2015_2017.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_percap_2015_2017[2:4] <- NULL
+            names(gdpr_percap_2015_2017)[1] <- "Province"
+            names(gdpr_percap_2015_2017)[2] <- "2015"
+            names(gdpr_percap_2015_2017)[3] <- "2016"
+            names(gdpr_percap_2015_2017)[4] <- "2017"
+            gdpr_percap_2015_2017 <- pivot_longer(gdpr_percap_2015_2017, cols = 2:4, names_to = "year", values_to = "gdpr_percap")
+            
+          gdpr_percap_2018_2020 <- read_excel("data_demand_forecast/gdpr/gdpr_per_capita_production_2018_2020.xlsx", range = "A3:G38", col_names = TRUE)
+            gdpr_percap_2018_2020[2:4] <- NULL
+            names(gdpr_percap_2018_2020)[1] <- "Province"
+            names(gdpr_percap_2018_2020)[2] <- "2018"
+            names(gdpr_percap_2018_2020)[3] <- "2019"
+            names(gdpr_percap_2018_2020)[4] <- "2020"
+            gdpr_percap_2018_2020 <- pivot_longer(gdpr_percap_2018_2020, cols = 2:4, names_to = "year", values_to = "gdpr_percap")
+          
+          #merge data
+          gdpr_percap_2010_2020 <- rbind(gdpr_percap_2010_2011,
+                                         gdpr_percap_2012_2014,
+                                         gdpr_percap_2015_2017,
+                                         gdpr_percap_2018_2020)
+          
+          #remove all spaces, and convert comma to dot, replace "-" with 0
+          gdpr_percap_2010_2020$gdpr_percap <- sub(",", ".", gdpr_percap_2010_2020$gdpr_percap, fixed = TRUE)
+          gdpr_percap_2010_2020$gdpr_percap <- sub("-", "0", gdpr_percap_2010_2020$gdpr_percap, fixed = TRUE)
+          gdpr_percap_2010_2020             <- gdpr_percap_2010_2020 %>% mutate(gdpr_percap = str_remove(gdpr_percap, "\\s"))
+          gdpr_percap_2010_2020             <- gdpr_percap_2010_2020 %>% mutate(gdpr_percap = str_remove(gdpr_percap, "\\s"))
+          gdpr_percap_2010_2020$gdpr_percap <- as.numeric(gdpr_percap_2010_2020$gdpr_percap)
+          names(gdpr_percap_2010_2020)[3]   <- "gdpr_percap_thousand_idr" 
+            
   
-gdpr_const_2012 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2012.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2012[2:35] <- NULL
-  names(gdpr_const_2012)[1] <- "Province"
-  names(gdpr_const_2012)[2] <- "2012"
-  gdpr_const_2012$Province[35] <- "INDONESIA"
-  gdpr_const_2012 <- pivot_longer(gdpr_const_2012, cols = 2, names_to = "year", values_to = "gdpr")
-  
-gdpr_const_2013 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2013.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2013[2:35] <- NULL
-  names(gdpr_const_2013)[1] <- "Province"
-  names(gdpr_const_2013)[2] <- "2013"
-  gdpr_const_2013$Province[35] <- "INDONESIA"
-  gdpr_const_2013 <- pivot_longer(gdpr_const_2013, cols = 2, names_to = "year", values_to = "gdpr")
-
-gdpr_const_2014 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2014.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2014[2:35] <- NULL
-  names(gdpr_const_2014)[1] <- "Province"
-  names(gdpr_const_2014)[2] <- "2014"
-  gdpr_const_2014$Province[35] <- "INDONESIA"
-  gdpr_const_2014 <- pivot_longer(gdpr_const_2014, cols = 2, names_to = "year", values_to = "gdpr")
-
-gdpr_const_2015 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2015.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2015[2:35] <- NULL
-  names(gdpr_const_2015)[1] <- "Province"
-  names(gdpr_const_2015)[2] <- "2015"
-  gdpr_const_2015$Province[35] <- "INDONESIA"
-  gdpr_const_2015 <- pivot_longer(gdpr_const_2015, cols = 2, names_to = "year", values_to = "gdpr")
-
-gdpr_const_2016 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2016.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2016[2:35] <- NULL
-  names(gdpr_const_2016)[1] <- "Province"
-  names(gdpr_const_2016)[2] <- "2016"
-  gdpr_const_2016$Province[35] <- "INDONESIA"
-  gdpr_const_2016 <- pivot_longer(gdpr_const_2016, cols = 2, names_to = "year", values_to = "gdpr")
-
-gdpr_const_2017 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2017.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2017[2:35] <- NULL
-  names(gdpr_const_2017)[1] <- "Province"
-  names(gdpr_const_2017)[2] <- "2017"
-  gdpr_const_2017$Province[35] <- "INDONESIA"
-  gdpr_const_2017 <- pivot_longer(gdpr_const_2017, cols = 2, names_to = "year", values_to = "gdpr")
-  
-gdpr_const_2018 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2018.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2018[2:35] <- NULL
-  names(gdpr_const_2018)[1] <- "Province"
-  names(gdpr_const_2018)[2] <- "2018"
-  gdpr_const_2018$Province[35] <- "INDONESIA"
-  gdpr_const_2018 <- pivot_longer(gdpr_const_2018, cols = 2, names_to = "year", values_to = "gdpr")
-  
-gdpr_const_2019 <- read_excel("data_demand_forecast/GDPR/gdpr_const_2019.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_const_2019[2:35] <- NULL
-  names(gdpr_const_2019)[1] <- "Province"
-  names(gdpr_const_2019)[2] <- "2019"
-  gdpr_const_2019$Province[35] <- "INDONESIA"
-  gdpr_const_2019 <- pivot_longer(gdpr_const_2019, cols = 2, names_to = "year", values_to = "gdpr")
-
-  
-#merge data
-gdpr_2011_2019 <- rbind(gdpr_const_2011, gdpr_const_2012, gdpr_const_2013, gdpr_const_2014, gdpr_const_2015, 
-                        gdpr_const_2016, gdpr_const_2017, gdpr_const_2018, gdpr_const_2019)
-#remove all spaces, and convert comma to dot, replace "-" with 0
-gdpr_2011_2019[3] <- sub(",", ".", gdpr_2011_2019$gdpr, fixed = TRUE)
-gdpr_2011_2019[3] <- sub("-", "0", gdpr_2011_2019$gdpr, fixed = TRUE)
-gdpr_2011_2019    <- gdpr_2011_2019 %>%  mutate(gdpr = str_remove(gdpr, "\\s"))
-gdpr_2011_2019    <- gdpr_2011_2019 %>%  mutate(gdpr = str_remove(gdpr, "\\s"))
-gdpr_2011_2019    <- gdpr_2011_2019 %>%  mutate(gdpr = str_remove(gdpr, "\\s"))
-
-
-# Nominal GDP data ------------------------------------------------------------
-# all in million rupiah
-gdpr_nom_2011 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2011.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2011[2:35] <- NULL
-  names(gdpr_nom_2011)[1] <- "Province"
-  names(gdpr_nom_2011)[2] <- "2011"
-  gdpr_nom_2011$Province[35] <- "INDONESIA"
-  gdpr_nom_2011 <- pivot_longer(gdpr_nom_2011, cols = 2, names_to = "year", values_to = "gdpr_nom")
-  
-gdpr_nom_2012 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2012.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2012[2:35] <- NULL
-  names(gdpr_nom_2012)[1] <- "Province"
-  names(gdpr_nom_2012)[2] <- "2012"
-  gdpr_nom_2012$Province[35] <- "INDONESIA"
-  gdpr_nom_2012 <- pivot_longer(gdpr_nom_2012, cols = 2, names_to = "year", values_to = "gdpr_nom")
-
-gdpr_nom_2013 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2013.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2013[2:35] <- NULL
-  names(gdpr_nom_2013)[1] <- "Province"
-  names(gdpr_nom_2013)[2] <- "2013"
-  gdpr_nom_2013$Province[35] <- "INDONESIA"
-  gdpr_nom_2013 <- pivot_longer(gdpr_nom_2013, cols = 2, names_to = "year", values_to = "gdpr_nom")
-  
-gdpr_nom_2014 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2014.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2014[2:35] <- NULL
-  names(gdpr_nom_2014)[1] <- "Province"
-  names(gdpr_nom_2014)[2] <- "2014"
-  gdpr_nom_2014$Province[35] <- "INDONESIA"
-  gdpr_nom_2014 <- pivot_longer(gdpr_nom_2014, cols = 2, names_to = "year", values_to = "gdpr_nom")
-
-gdpr_nom_2015 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2015.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2015[2:35] <- NULL
-  names(gdpr_nom_2015)[1] <- "Province"
-  names(gdpr_nom_2015)[2] <- "2015"
-  gdpr_nom_2015$Province[35] <- "INDONESIA"
-  gdpr_nom_2015 <- pivot_longer(gdpr_nom_2015, cols = 2, names_to = "year", values_to = "gdpr_nom")
-
-gdpr_nom_2016 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2016.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2016[2:35] <- NULL
-  names(gdpr_nom_2016)[1] <- "Province"
-  names(gdpr_nom_2016)[2] <- "2016"
-  gdpr_nom_2016$Province[35] <- "INDONESIA"
-  gdpr_nom_2016 <- pivot_longer(gdpr_nom_2016, cols = 2, names_to = "year", values_to = "gdpr_nom")
-
-gdpr_nom_2017 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2017.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2017[2:35] <- NULL
-  names(gdpr_nom_2017)[1] <- "Province"
-  names(gdpr_nom_2017)[2] <- "2017"
-  gdpr_nom_2017$Province[35] <- "INDONESIA"
-  gdpr_nom_2017 <- pivot_longer(gdpr_nom_2017, cols = 2, names_to = "year", values_to = "gdpr_nom")
-  
-gdpr_nom_2018 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2018.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2018[2:35] <- NULL
-  names(gdpr_nom_2018)[1] <- "Province"
-  names(gdpr_nom_2018)[2] <- "2018"
-  gdpr_nom_2018$Province[35] <- "INDONESIA"
-  gdpr_nom_2018 <- pivot_longer(gdpr_nom_2018, cols = 2, names_to = "year", values_to = "gdpr_nom")
-  
-gdpr_nom_2019 <- read_excel("data_demand_forecast/GDPR/gdpr_nom_2019.xlsx", range = "A4:AJ39", col_names = TRUE)
-  gdpr_nom_2019[2:35] <- NULL
-  names(gdpr_nom_2019)[1] <- "Province"
-  names(gdpr_nom_2019)[2] <- "2019"
-  gdpr_nom_2019$Province[35] <- "INDONESIA"
-  gdpr_nom_2019 <- pivot_longer(gdpr_nom_2019, cols = 2, names_to = "year", values_to = "gdpr_nom")
-
-
-#merge data
-gdpr_nom_2011_2019 <- rbind(gdpr_nom_2011, gdpr_nom_2012, gdpr_nom_2013, gdpr_nom_2014, gdpr_nom_2015,
-                            gdpr_nom_2016, gdpr_nom_2017, gdpr_nom_2018, gdpr_nom_2019)
-
-#remove all spaces, and convert comma to dot, replace "-" with 0
-gdpr_nom_2011_2019[3] <- sub(",", ".", gdpr_nom_2011_2019$gdpr_nom, fixed = TRUE)
-gdpr_nom_2011_2019[3] <- sub("-", "0", gdpr_nom_2011_2019$gdpr_nom, fixed = TRUE)
-gdpr_nom_2011_2019    <- gdpr_nom_2011_2019 %>%  mutate(gdpr_nom = str_remove(gdpr_nom, "\\s"))
-gdpr_nom_2011_2019    <- gdpr_nom_2011_2019 %>%  mutate(gdpr_nom = str_remove(gdpr_nom, "\\s"))
-gdpr_nom_2011_2019    <- gdpr_nom_2011_2019 %>%  mutate(gdpr_nom = str_remove(gdpr_nom, "\\s"))
-
-
-
 # Population data ---------------------------------------------------------
+# calculated from GDPR and GPDR per capita
+# population = 1e+6 * GDPR (billion IDR) / GDPR per capita (thousand IDR / person)
 
+          population_data <- gdpr_2010_2020
+          names(population_data)[3] <- "population"
+          population_data$population <- 1000000 * gdpr_2010_2020$gdpr_billion_idr / gdpr_percap_2010_2020$gdpr_thousand_idr
+          
 
 # Energy intensity data ---------------------------------------------------
 
@@ -182,56 +129,84 @@ gdpr_nom_2011_2019    <- gdpr_nom_2011_2019 %>%  mutate(gdpr_nom = str_remove(gd
 # Distributed electricity gWh data ----------------------------------------
 # gfrom BPS, stored locally in github folder
 # distributed electricity to each province in Indonesia
-dist_gwh_2011_2012 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2011_2012.xlsx", range = "A2:C37", col_names = TRUE)
-  names(dist_gwh_2011_2012)[1] <- "Province"
-  dist_gwh_2011_2012 <- pivot_longer(dist_gwh_2011_2012, cols = 2:3, names_to = "year", values_to = "dist_gwh")
-
-dist_gwh_2013_2015 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2013_2015.xlsx", range = "A2:D37", col_names = TRUE)
-  names(dist_gwh_2013_2015)[1] <- "Province"
-  dist_gwh_2013_2015 <- pivot_longer(dist_gwh_2013_2015, cols = 2:4, names_to = "year", values_to = "dist_gwh")
-
-dist_gwh_2017_2019 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2017_2019.xlsx", range = "A2:D37", col_names = TRUE)
-  names(dist_gwh_2017_2019)[1] <- "Province"
-  dist_gwh_2017_2019 <- pivot_longer(dist_gwh_2017_2019, cols = 2:4, names_to = "year", values_to = "dist_gwh")
-
-#merge all data
-dist_gwh_2011_2019 <- rbind(dist_gwh_2011_2012, dist_gwh_2013_2015, dist_gwh_2017_2019)
-
-#remove all spaces, and convert comma to dot, replace "-" with 0
-dist_gwh_2011_2019[3] <- sub(",", ".", dist_gwh_2011_2019$dist_gwh, fixed = TRUE)
-dist_gwh_2011_2019[3] <- sub("-", "0", dist_gwh_2011_2019$dist_gwh, fixed = TRUE)
-dist_gwh_2011_2019 <- dist_gwh_2011_2019 %>%  mutate(dist_gwh = str_remove(dist_gwh, "\\s"))
+          dist_gwh_2011_2012 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2011_2012.xlsx", range = "A2:C37", col_names = TRUE)
+            names(dist_gwh_2011_2012)[1] <- "Province"
+            dist_gwh_2011_2012 <- pivot_longer(dist_gwh_2011_2012, cols = 2:3, names_to = "year", values_to = "dist_gwh")
+          
+          dist_gwh_2013_2015 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2013_2015.xlsx", range = "A2:D37", col_names = TRUE)
+            names(dist_gwh_2013_2015)[1] <- "Province"
+            dist_gwh_2013_2015 <- pivot_longer(dist_gwh_2013_2015, cols = 2:4, names_to = "year", values_to = "dist_gwh")
+          
+          dist_gwh_2017_2019 <- read_excel("data_demand_forecast/gWh/distributed_gwh_2017_2019.xlsx", range = "A2:D37", col_names = TRUE)
+            names(dist_gwh_2017_2019)[1] <- "Province"
+            dist_gwh_2017_2019 <- pivot_longer(dist_gwh_2017_2019, cols = 2:4, names_to = "year", values_to = "dist_gwh")
+          
+          #merge all data
+          dist_gwh_2011_2019 <- rbind(dist_gwh_2011_2012, dist_gwh_2013_2015, dist_gwh_2017_2019)
+          
+          #remove all spaces, and convert comma to dot, replace "-" with 0
+          dist_gwh_2011_2019[3] <- sub(",", ".", dist_gwh_2011_2019$dist_gwh, fixed = TRUE)
+          dist_gwh_2011_2019[3] <- sub("-", "0", dist_gwh_2011_2019$dist_gwh, fixed = TRUE)
+          dist_gwh_2011_2019    <- dist_gwh_2011_2019 %>%  mutate(dist_gwh = str_remove(dist_gwh, "\\s"))
+          dist_gwh_2011_2019$dist_gwh    <- as.numeric(dist_gwh_2011_2019$dist_gwh)
 
 # generation (non-sectoral) gWh data ----------------------------------------------------------------
 # generation data (GWh) from BPS, stored locally in github folder
-gen_gwh_2011_2012 <- read_excel("data_demand_forecast/gWh/generation_gwh_2011_2012.xlsx", range = "A2:C37", col_names = TRUE)
-  names(gen_gwh_2011_2012)[1] <- "Province"
-  gen_gwh_2011_2012 <- pivot_longer(gen_gwh_2011_2012, cols = 2:3, names_to = "year", values_to = "gen_gwh")
+          gen_gwh_2011_2012 <- read_excel("data_demand_forecast/gWh/generation_gwh_2011_2012.xlsx", range = "A2:C37", col_names = TRUE)
+            names(gen_gwh_2011_2012)[1] <- "Province"
+            gen_gwh_2011_2012 <- pivot_longer(gen_gwh_2011_2012, cols = 2:3, names_to = "year", values_to = "gen_gwh")
+          
+          gen_gwh_2013_2015 <- read_excel("data_demand_forecast/gWh/generation_gwh_2013_2015.xlsx", range = "A2:D37", col_names = TRUE)
+            names(gen_gwh_2013_2015)[1] <- "Province"
+            gen_gwh_2013_2015 <- pivot_longer(gen_gwh_2013_2015, cols = 2:4, names_to = "year", values_to = "gen_gwh")
+          
+          gen_gwh_2017_2019 <- read_excel("data_demand_forecast/gWh/generation_gwh_2017_2019.xlsx", range = "A2:D37", col_names = TRUE)
+            names(gen_gwh_2017_2019)[1] <- "Province"
+            gen_gwh_2017_2019 <- pivot_longer(gen_gwh_2017_2019, cols = 2:4, names_to = "year", values_to = "gen_gwh")
+          
+          #merge all data
+          gen_gwh_2011_2019 <- rbind(gen_gwh_2011_2012, 
+                                     gen_gwh_2013_2015, 
+                                     gen_gwh_2017_2019)
+          
+          #remove all spaces, and convert comma to dot, replace "-" with 0
+          gen_gwh_2011_2019[3] <- sub(",", ".", gen_gwh_2011_2019$gen_gwh, fixed = TRUE)
+          gen_gwh_2011_2019[3] <- sub("-", "0", gen_gwh_2011_2019$gen_gwh, fixed = TRUE)
+          gen_gwh_2011_2019    <- gen_gwh_2011_2019 %>%  mutate(gen_gwh = str_remove(gen_gwh, "\\s"))
+          gen_gwh_2011_2019$gen_gwh    <- as.numeric(gen_gwh_2011_2019$gen_gwh)
 
-gen_gwh_2013_2015 <- read_excel("data_demand_forecast/gWh/generation_gwh_2013_2015.xlsx", range = "A2:D37", col_names = TRUE)
-  names(gen_gwh_2013_2015)[1] <- "Province"
-  gen_gwh_2013_2015 <- pivot_longer(gen_gwh_2013_2015, cols = 2:4, names_to = "year", values_to = "gen_gwh")
 
-gen_gwh_2017_2019 <- read_excel("data_demand_forecast/gWh/generation_gwh_2017_2019.xlsx", range = "A2:D37", col_names = TRUE)
-  names(gen_gwh_2017_2019)[1] <- "Province"
-  gen_gwh_2017_2019 <- pivot_longer(gen_gwh_2017_2019, cols = 2:4, names_to = "year", values_to = "gen_gwh")
+# Installed capacity ------------------------------------------------------
+# capacity in MW for each province
+          capacity_2011_2012 <- read_excel("data_demand_forecast/capacity/capacity_mw_2011_2012.xlsx", range = "A2:C37", col_names = TRUE)
+            names(capacity_2011_2012)[1] <- "Province"
+            capacity_2011_2012 <- pivot_longer(capacity_2011_2012, cols = 2:3, names_to = "year", values_to = "capacity_mw")
+            
+          capacity_2013_2015 <- read_excel("data_demand_forecast/capacity/capacity_mw_2013_2015.xlsx", range = "A2:D37", col_names = TRUE)
+            names(capacity_2013_2015)[1] <- "Province"
+            capacity_2013_2015 <- pivot_longer(capacity_2013_2015, cols = 2:4, names_to = "year", values_to = "capacity_mw")
+            
+          capacity_2017_2019 <- read_excel("data_demand_forecast/capacity/capacity_mw_2017_2019.xlsx", range = "A2:D37", col_names = TRUE)
+            names(capacity_2017_2019)[1] <- "Province"
+            capacity_2017_2019 <- pivot_longer(capacity_2017_2019, cols = 2:4, names_to = "year", values_to = "capacity_mw")
+            
+          #merge all data
+          capacity_2011_2019 <- rbind(capacity_2011_2012,
+                                      capacity_2013_2015,
+                                      capacity_2017_2019)
+          #remove all spaces, and convert comma to dot, replace "_" with 0
+          capacity_2011_2019[3] <- sub(",", ".", capacity_2011_2019$capacity_mw, fixed = TRUE)
+          capacity_2011_2019[3] <- sub("-", "0", capacity_2011_2019$capacity_mw, fixed = TRUE)
+          capacity_2011_2019    <- capacity_2011_2019 %>% mutate(capacity_mw = str_remove(capacity_mw, "\\s"))
+          capacity_2011_2019$capacity_mw <- as.numeric (capacity_2011_2019$capacity_mw)
 
-#merge all data
-gen_gwh_2011_2019 <- rbind(gen_gwh_2011_2012, gen_gwh_2013_2015, gen_gwh_2017_2019)
-
-#remove all spaces, and convert comma to dot, replace "-" with 0
-gen_gwh_2011_2019[3] <- sub(",", ".", gen_gwh_2011_2019$gen_gwh, fixed = TRUE)
-gen_gwh_2011_2019[3] <- sub("-", "0", gen_gwh_2011_2019$gen_gwh, fixed = TRUE)
-gen_gwh_2011_2019 <- gen_gwh_2011_2019 %>%  mutate(gen_gwh = str_remove(gen_gwh, "\\s"))
-
-
-# Sectoral gWh data -------------------------------------------------------
-# this section will not be included for this project, due to time limitations
 
 # Bind all data ---------------------------------------------------------------------
-historical_data_source <- merge (gdpr_2011_2019, gdpr_nom_2011_2019, by = c("Province","year"), sort = FALSE)
-historical_data_source <- merge (historical_data_source, dist_gwh_2011_2019, by = c("Province","year"), sort = FALSE)
-historical_data_source <- merge (historical_data_source, gen_gwh_2011_2019, by = c("Province","year"), sort = FALSE)
+          historical_data_source <- merge (gdpr_2010_2020,         gdpr_percap_2010_2020, by = c("Province","year"), sort = FALSE)
+          historical_data_source <- merge (historical_data_source, population_data,       by = c("Province","year"), sort = FALSE)
+          historical_data_source <- merge (historical_data_source, dist_gwh_2011_2019,    by = c("Province","year"), sort = FALSE)
+          historical_data_source <- merge (historical_data_source, gen_gwh_2011_2019,     by = c("Province","year"), sort = FALSE)
+          historical_data_source <- merge (historical_data_source, capacity_2011_2019,    By = c("Province","year"), sort = FALSE)
 
 # add region column
 #historical_data_source <- transform(historical_data_source, Region = historical_data_source$Province)
