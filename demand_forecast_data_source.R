@@ -175,14 +175,17 @@ Region_8 <- "NATIONAL"
         energy_intensity$intensity_ppp_nom  <- energy_intensity$MJ / energy_intensity$gdp_ppp_nom_usd
         # intensity 5 - GDP PPP real ($)     ___ (MJ / USD)
         energy_intensity$intensity_ppp_real <- energy_intensity$MJ / energy_intensity$gdp_ppp_real_usd
-
-        energy_intensity[5:9] <- NULL
         
+        # create biased energy intensity to be used for the historical data
+        energy_intensity$intensity_biased   <- 1.0 * energy_intensity$intensity_gdpr
+      
         # Why the GDP is below 3, while internet sources says it is 4 MJ in 2015 ???????????
-
+        
 
 # Electricity price data --------------------------------------------------
-
+# this electricity price data is to be filled with national average electricity price from 2010 to 2019
+# I believe that the data will be the same nationwide
+# try to find it from bps or PLN
 
 
 
@@ -275,6 +278,12 @@ Region_8 <- "NATIONAL"
         historical_data_source <- merge(historical_data_source, dist_gwh_2011_2019,    by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, gwh_consumption_percap,by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, capacity_2011_2019,    By = c("Province","year"), sort = FALSE)
+
+#assign energy intensity to the main data
+        energy_intensity[3:14]  <- NULL
+        energy_intensity[1]    <- NULL
+        historical_data_source <- merge(historical_data_source, energy_intensity, all.x = TRUE, by = c("year"), sort  = FALSE)
+        
 
 # add region column
 #historical_data_source <- transform(historical_data_source, Region = historical_data_source$Province)
