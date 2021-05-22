@@ -1,5 +1,6 @@
 library(readxl)
 library(tidyverse)
+library(ggplot2)
 setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
 
 #set region names
@@ -14,6 +15,7 @@ Region_8 <- "NATIONAL"
 
 # Real GDP data ------------------------------------------------------------
 # all in billion rupiah
+
         gdpr_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_production_2010_2011.xlsx", range = "A3:E38", col_names = TRUE)
           gdpr_2010_2011[2:3] <- NULL
           names(gdpr_2010_2011)[1] <- "Province"
@@ -58,6 +60,35 @@ Region_8 <- "NATIONAL"
         gdpr_2010_2020      <- gdpr_2010_2020 %>% mutate(gdpr = str_remove(gdpr, "\\s"))
         gdpr_2010_2020$gdpr <- as.numeric(gdpr_2010_2020$gdpr)
         names(gdpr_2010_2020)[3] <- "gdpr_billion_idr"
+
+# Real GDPR growth -------------------------------------------------------------
+# based on 2010 constant price
+        gdpr_growth_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2010_2011.xlsx", range = "A2:C37", col_names = TRUE)
+          gdpr_growth_2010_2011[2] <- NULL
+          names(gdpr_growth_2010_2011)[1] <- "Province"
+          gdpr_growth_2010_2011 <- pivot_longer(gdpr_growth_2010_2011, cols = 2, names_to = "year", values_to = "gdpr_growth_%")
+        
+        gdpr_growth_2012_2014 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2012_2014.xlsx", range = "A2:D37", col_names = TRUE)
+          names(gdpr_growth_2012_2014)[1] <- "Province"
+          gdpr_growth_2012_2014 <- pivot_longer(gdpr_growth_2012_2014, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%")     
+          
+        gdpr_growth_2015_2017 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2015_2017.xlsx", range = "A2:D37", col_names = TRUE)
+          names(gdpr_growth_2015_2017)[1] <- "Province"
+          gdpr_growth_2015_2017 <- pivot_longer(gdpr_growth_2015_2017, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%") 
+          
+        gdpr_growth_2018_2020 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2018_2020.xlsx", range = "A2:D37", col_names = TRUE)
+          names(gdpr_growth_2018_2020)[1] <- "Province"
+          gdpr_growth_2018_2020 <- pivot_longer(gdpr_growth_2018_2020, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%") 
+
+# merge data
+          gdpr_growth_2011_2020 <- rbind(gdpr_growth_2010_2011,
+                                         gdpr_growth_2012_2014,
+                                         gdpr_growth_2015_2017,
+                                         gdpr_growth_2018_2020)
+          
+          gdpr_growth_2011_2020$`gdpr_growth_%` <- sub(",", ".", gdpr_growth_2011_2020$`gdpr_growth_%`, fixed = TRUE)
+          gdpr_growth_2011_2020$`gdpr_growth_%` <- as.numeric(gdpr_growth_2011_2020$`gdpr_growth_%`)
+                  
 
 # GDPR per capita data ----------------------------------------------------
         gdpr_percap_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_per_capita_production_2010_2011.xlsx", range = "A3:E38", col_names = TRUE)
@@ -104,7 +135,8 @@ Region_8 <- "NATIONAL"
         gdpr_percap_2010_2020             <- gdpr_percap_2010_2020 %>% mutate(gdpr_percap = str_remove(gdpr_percap, "\\s"))
         gdpr_percap_2010_2020$gdpr_percap <- as.numeric(gdpr_percap_2010_2020$gdpr_percap)
         names(gdpr_percap_2010_2020)[3]   <- "gdpr_percap_thousand_idr" 
-          
+        
+
 # Population data ---------------------------------------------------------
 # calculated from GDPR and GPDR per capita
 # population = 1e+6 * GDPR (billion IDR) / GDPR per capita (thousand IDR / person)
@@ -184,9 +216,8 @@ Region_8 <- "NATIONAL"
 
 # Electricity price data --------------------------------------------------
 # this electricity price data is to be filled with national average electricity price from 2010 to 2019
-# I believe that the data will be the same nationwide
-# try to find it from bps or PLN
 
+# this data is hard to find, thus will be skipped
 
 
 # generation (non-sectoral) gWh data ----------------------------------------------------------------
@@ -273,17 +304,19 @@ Region_8 <- "NATIONAL"
 
 # Bind all data ---------------------------------------------------------------------
         historical_data_source <- merge(gdpr_2010_2020,         gdpr_percap_2010_2020, by = c("Province","year"), sort = FALSE)
+        historical_data_source <- merge(historical_data_source, gdpr_growth_2011_2020, by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, population_data,       by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, gen_gwh_2011_2019,     by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, dist_gwh_2011_2019,    by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, gwh_consumption_percap,by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, capacity_2011_2019,    By = c("Province","year"), sort = FALSE)
 
-#assign energy intensity to the main data
-        energy_intensity[3:14]  <- NULL
+# assign energy intensity to the main data
+        energy_intensity[3:14] <- NULL
         energy_intensity[1]    <- NULL
-        historical_data_source <- merge(historical_data_source, energy_intensity, all.x = TRUE, by = c("year"), sort  = FALSE)
-        
+        historical_data_source <- merge(historical_data_source, energy_intensity, all.x = TRUE, by = "year", sort  = FALSE)
+# set year as numeric
+        historical_data_source$year <- as.numeric(historical_data_source$year)
 
 # add region column
 #historical_data_source <- transform(historical_data_source, Region = historical_data_source$Province)
@@ -337,7 +370,13 @@ Region_8 <- "NATIONAL"
 
 
 # End ---------------------------------------------------------------------
-#write data
-write_csv(historical_data_source, "data_demand_forecast/forecast_data_source.csv") #whole data
+    # write data
+    # write_csv(historical_data_source, "data_demand_forecast/forecast_data_source.csv") #whole data
 
+
+# Data visualization ------------------------------------------------------
+    # historical_data_source[historical_data_source$Province == "Indonesia"] <- NULL
+    # plot(historical_data_source$year, historical_data_source$dist_gwh)
+        
+        
 
