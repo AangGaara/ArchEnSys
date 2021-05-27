@@ -317,6 +317,9 @@ Region_8 <- "NATIONAL"
         historical_data_source <- merge(historical_data_source, energy_intensity, all.x = TRUE, by = "year", sort  = FALSE)
 # set year as numeric
         historical_data_source$year <- as.numeric(historical_data_source$year)
+        
+# replace or NA with 0 (zero)
+        historical_data_source[is.na(historical_data_source)] <- 0
 
 # add region column
 #historical_data_source <- transform(historical_data_source, Region = historical_data_source$Province)
@@ -372,11 +375,4 @@ Region_8 <- "NATIONAL"
 # End ---------------------------------------------------------------------
     # write data
     # write_csv(historical_data_source, "data_demand_forecast/forecast_data_source.csv") #whole data
-
-
-# Data visualization ------------------------------------------------------
-    # historical_data_source[historical_data_source$Province == "Indonesia"] <- NULL
-    # plot(historical_data_source$year, historical_data_source$dist_gwh)
-        
-        
 
