@@ -2,34 +2,42 @@ library(neuralnet)
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
+library(normalr)
+library(gradDescent)
 
 setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
 source("demand_forecast_data_source.R")
 #nn_dataset <- historical_data_source
 
 #remove indonesia
-nn_dataset <- historical_data_source[historical_data_source$Province =="INDONESIA",]
+    nn_dataset <- historical_data_source[historical_data_source$Province =="INDONESIA",]
 
 
-#main steps
-# from: https://www.datacamp.com/community/tutorials/neural-network-models-r
-# nice to read: https://datascienceplus.com/fitting-neural-network-in-r/
-# from https://www.youtube.com/watch?v=Eecg_Nt8LLc
+# call min and max value for each column
+    colMax <- function(data) sapply(data, max, na.rm = TRUE)
+    colMin <- function(data) sapply(data, min, na.rm = TRUE)
+    
+    max_val <- colMax(nn_dataset[,c(1,3:11)])
+    min_val <- colMin(nn_dataset[,c(1,3:11)])
+    scale_val <- max_val - min_val
 
-# 1. Create training data set
-# 2. FIt neural network
-# 3. Create test set
-# 4. Prediction using Neural Network
-# 5. Call the trained netowrk
+# max-min normalization
+    normalize <- function(x) {
+      return((x - min(x)) / (max(x) - min(x)))
+    }
+    
+    maxmindf  <- as.data.frame(lapply(nn_dataset[,c(1,3:11)], normalize))
 
+    ori_value <- (maxmindf*scale_val) + min_val
+    
 
 # Create training & testing data set
 # 80% of the data will be used
-train_obs_size = ceiling(nrow(nn_dataset) * 0.8) #80% of the data will be used for training
-test_obs_size  = nrow(nn_dataset) - train_obs_size
-
-train_dataset   <- nn_dataset[1:train_obs_size, ]
-test_dataset    <- nn_dataset[(train_obs_size+1):nrow(nn_dataset),]
+    train_obs_size = ceiling(nrow(maxmindf) * 0.8) #80% of the data will be used for training
+    test_obs_size  = nrow(maxmindf) - train_obs_size
+    
+    train_dataset   <- maxmindf[1:train_obs_size, ]
+    test_dataset    <- maxmindf[(train_obs_size+1):nrow(maxmindf),]
 
 # fit neural network
 number_of_variables <- ncol(train_dataset)

@@ -66,19 +66,19 @@ Region_8 <- "NATIONAL"
         gdpr_growth_2010_2011 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2010_2011.xlsx", range = "A2:C37", col_names = TRUE)
           gdpr_growth_2010_2011[2] <- NULL
           names(gdpr_growth_2010_2011)[1] <- "Province"
-          gdpr_growth_2010_2011 <- pivot_longer(gdpr_growth_2010_2011, cols = 2, names_to = "year", values_to = "gdpr_growth_%")
+          gdpr_growth_2010_2011 <- pivot_longer(gdpr_growth_2010_2011, cols = 2, names_to = "year", values_to = "gdpr_growth")
         
         gdpr_growth_2012_2014 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2012_2014.xlsx", range = "A2:D37", col_names = TRUE)
           names(gdpr_growth_2012_2014)[1] <- "Province"
-          gdpr_growth_2012_2014 <- pivot_longer(gdpr_growth_2012_2014, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%")     
+          gdpr_growth_2012_2014 <- pivot_longer(gdpr_growth_2012_2014, cols = 2:4, names_to = "year", values_to = "gdpr_growth")     
           
         gdpr_growth_2015_2017 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2015_2017.xlsx", range = "A2:D37", col_names = TRUE)
           names(gdpr_growth_2015_2017)[1] <- "Province"
-          gdpr_growth_2015_2017 <- pivot_longer(gdpr_growth_2015_2017, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%") 
+          gdpr_growth_2015_2017 <- pivot_longer(gdpr_growth_2015_2017, cols = 2:4, names_to = "year", values_to = "gdpr_growth") 
           
         gdpr_growth_2018_2020 <- read_excel("data_demand_forecast/gdpr/gdpr_production_growth_2018_2020.xlsx", range = "A2:D37", col_names = TRUE)
           names(gdpr_growth_2018_2020)[1] <- "Province"
-          gdpr_growth_2018_2020 <- pivot_longer(gdpr_growth_2018_2020, cols = 2:4, names_to = "year", values_to = "gdpr_growth_%") 
+          gdpr_growth_2018_2020 <- pivot_longer(gdpr_growth_2018_2020, cols = 2:4, names_to = "year", values_to = "gdpr_growth") 
 
 # merge data
           gdpr_growth_2011_2020 <- rbind(gdpr_growth_2010_2011,
@@ -86,8 +86,8 @@ Region_8 <- "NATIONAL"
                                          gdpr_growth_2015_2017,
                                          gdpr_growth_2018_2020)
           
-          gdpr_growth_2011_2020$`gdpr_growth_%` <- sub(",", ".", gdpr_growth_2011_2020$`gdpr_growth_%`, fixed = TRUE)
-          gdpr_growth_2011_2020$`gdpr_growth_%` <- as.numeric(gdpr_growth_2011_2020$`gdpr_growth_%`)
+          gdpr_growth_2011_2020$`gdpr_growth` <- sub(",", ".", gdpr_growth_2011_2020$`gdpr_growth`, fixed = TRUE)
+          gdpr_growth_2011_2020$`gdpr_growth` <- as.numeric(gdpr_growth_2011_2020$`gdpr_growth`)
                   
 
 # GDPR per capita data ----------------------------------------------------
