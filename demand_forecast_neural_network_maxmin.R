@@ -8,27 +8,31 @@ library(gradDescent)
 setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
 source("demand_forecast_data_source.R")
 #nn_dataset <- historical_data_source
+#nn_dataset <- nn_dataset(order(nn_dataset$dist_gwh),)
 
 #remove indonesia
     nn_dataset <- historical_data_source[historical_data_source$Province =="INDONESIA",]
 
 
 # call min and max value for each column
-    colMax <- function(data) sapply(data, max, na.rm = TRUE)
-    colMin <- function(data) sapply(data, min, na.rm = TRUE)
+#    colMax <- function(data) sapply(data, max, na.rm = TRUE)
+#    colMin <- function(data) sapply(data, min, na.rm = TRUE)
+   
+#    max_val <- colMax(nn_dataset[,c(1,3:11)])
+#    min_val <- colMin(nn_dataset[,c(1,3:11)])
+#    scale_val <- max_val - min_val
     
-    max_val <- colMax(nn_dataset[,c(1,3:11)])
-    min_val <- colMin(nn_dataset[,c(1,3:11)])
-    scale_val <- max_val - min_val
+    max_dist_gwh <- max(nn_dataset$dist_gwh)
+    min_dist_gwh <- min(nn_dataset$dist_gwh)
+    scale_dist_gwh <- max_dist_gwh - min_dist_gwh
 
 # max-min normalization
     normalize <- function(x) {
       return((x - min(x)) / (max(x) - min(x)))
     }
     
-    maxmindf  <- as.data.frame(lapply(nn_dataset[,c(1,3:11)], normalize))
-
-    ori_value <- (maxmindf*scale_val) + min_val
+    maxmindf  <- as.data.frame(sapply(nn_dataset[,c(1,3:11)], normalize))
+#    ori_value <- as.data.frame(t((t(maxmindf)*scale_val) + min_val))
     
 
 # Create training & testing data set
@@ -48,8 +52,8 @@ number_of_variables <- ncol(train_dataset)
 #                linear.output = TRUE)
 nn <- neuralnet(dist_gwh ~ year + gdpr_billion_idr + gdpr_growth + population + intensity_biased,
                 data = train_dataset,
-                hidden = c(ncol(train_dataset), ncol(train_dataset)),
-                stepmax = 1e+6,
+                hidden = c(ncol(train_dataset), ncol(train_dataset)-1),
+                stepmax = 1e+5,
                 act.fct = "logistic",
                 linear.output = TRUE)
 plot(nn, rep = "best",
@@ -66,10 +70,25 @@ Predict = neuralnet::compute(nn, test_dataset)
 results <- data.frame(actual = test_dataset$dist_gwh, prediction = Predict$net.result)
 results
 
+#de normalize data
+   predict_value  <- (Predict$net.result * scale_dist_gwh) + min_dist_gwh
+   actual_value   <- (test_dataset$dist_gwh * scale_dist_gwh) + min_dist_gwh
+   error_percent  <- ((predict_value - actual_value)/actual_value)*100
+   results_denorm <- data.frame(actual_value, predict_value, error_percent)
+   average_error = mean(error_percent)
+   average_error
+
 #accuracy
 #from https://datascienceplus.com/neuralnet-train-and-test-neural-networks-using-r/
 
-
+#test the model to the training data
+    Predict_2 = neuralnet::compute(nn, train_dataset)
+    predict_value_2  <- (Predict_2$net.result * scale_dist_gwh) + min_dist_gwh
+    actual_value_2   <- (train_dataset$dist_gwh * scale_dist_gwh) + min_dist_gwh
+    error_percent_2  <- ((predict_value_2 - actual_value_2)/actual_value_2)*100
+    results_denorm_2 <- data.frame(actual_value_2, predict_value_2, error_percent_2)
+    average_error_2 = mean(error_percent_2)
+    average_error_2
 
 
 
