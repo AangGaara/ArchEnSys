@@ -1,0 +1,12 @@
+unique(projection_data$old_var)
+RasioElektrifikasi
+KebutuhanTambahanKapasitas(Pertahun)
+TotalKapasitas
+ProduksiTenagaListrik(Neto)**)
+PertumbuhanKebutuhanTenagaListrik
+KebutuhanTambahanKapasitas(Kumulatif)
+KonsumsiListrikPerKapita
+PertumbuhanEkonomi
+Inflasi
+PertumbuhanPenduduk
+KebutuhanTenagaListrik

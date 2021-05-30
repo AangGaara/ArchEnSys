@@ -1,17 +1,6 @@
 library(readxl)
 library(tidyverse)
-library(ggplot2)
 setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
-
-#set region names
-Region_1 <- "SUMATERA"
-Region_2 <- "KALIMANTAN"
-Region_3 <- "SULAWESI"
-Region_4 <- "MALUKU"
-Region_5 <- "PAPUA"
-Region_6 <- "NUSA TENGGARA"
-Region_7 <- "JAVA"
-Region_8 <- "NATIONAL"
 
 # Real GDP data ------------------------------------------------------------
 # all in billion rupiah
@@ -274,7 +263,7 @@ Region_8 <- "NATIONAL"
 # calculation using distributed electricity, instead of generated as there are areas without electricity generation facilities
         
         gwh_consumption_percap                 <- merge(dist_gwh_2011_2019, population_data)
-        gwh_consumption_percap$gWh_cons_percap <- 1e+6 * gwh_consumption_percap$dist_gwh / gwh_consumption_percap$population
+        gwh_consumption_percap$gwh_cons_percap <- 1e+6 * gwh_consumption_percap$dist_gwh / gwh_consumption_percap$population
         gwh_consumption_percap[3:4]            <- NULL
         
         
@@ -322,55 +311,9 @@ Region_8 <- "NATIONAL"
         historical_data_source[is.na(historical_data_source)] <- 0
 
 # add region column
-#historical_data_source <- transform(historical_data_source, Region = historical_data_source$Province)
-        historical_data_source <- within(historical_data_source, {
-                                  #create blank region
-                                  Region <- NA
-                                  #Sumatera region
-                                  Region[Province == "ACEH"]                  <- Region_1
-                                  Region[Province == "SUMATERA UTARA"]        <- Region_1
-                                  Region[Province == "SUMATERA BARAT"]        <- Region_1
-                                  Region[Province == "RIAU"]                  <- Region_1
-                                  Region[Province == "JAMBI"]                 <- Region_1
-                                  Region[Province == "SUMATERA SELATAN"]      <- Region_1
-                                  Region[Province == "BENGKULU"]              <- Region_1
-                                  Region[Province == "LAMPUNG"]               <- Region_1
-                                  Region[Province == "KEP. BANGKA BELITUNG"]  <- Region_1
-                                  Region[Province == "KEP. RIAU"]             <- Region_1
-                                  #Java region
-                                  Region[Province == "DKI JAKARTA"]   <- Region_7
-                                  Region[Province == "JAWA BARAT"]    <- Region_7
-                                  Region[Province == "JAWA TENGAH"]   <- Region_7
-                                  Region[Province == "DI YOGYAKARTA"] <- Region_7
-                                  Region[Province == "JAWA TIMUR"]    <- Region_7
-                                  Region[Province == "BANTEN"]        <- Region_7
-                                  #Bali & Nusa Tenggara region
-                                  Region[Province == "BALI"]                  <- Region_6
-                                  Region[Province == "NUSA TENGGARA BARAT"]   <- Region_6
-                                  Region[Province == "NUSA TENGGARA TIMUR"]   <- Region_6
-                                  #Kalimantan region
-                                  Region[Province == "KALIMANTAN BARAT"]      <- Region_2
-                                  Region[Province == "KALIMANTAN TENGAH"]     <- Region_2
-                                  Region[Province == "KALIMANTAN SELATAN"]    <- Region_2
-                                  Region[Province == "KALIMANTAN TIMUR"]      <- Region_2
-                                  Region[Province == "KALIMANTAN UTARA"]      <- Region_2
-                                  #Sulawesi region
-                                  Region[Province == "SULAWESI UTARA"]        <- Region_3
-                                  Region[Province == "SULAWESI TENGAH"]       <- Region_3
-                                  Region[Province == "SULAWESI SELATAN"]      <- Region_3
-                                  Region[Province == "SULAWESI TENGGARA"]     <- Region_3
-                                  Region[Province == "GORONTALO"]             <- Region_3
-                                  Region[Province == "SULAWESI BARAT"]        <- Region_3
-                                  #Maluku region
-                                  Region[Province == "MALUKU"]       <- Region_4
-                                  Region[Province == "MALUKU UTARA"] <- Region_4
-                                  #Papua region
-                                  Region[Province == "PAPUA BARAT"]  <- Region_5
-                                  Region[Province == "PAPUA"]        <- Region_5
-                                  #National region
-                                  Region[Province == "INDONESIA"]    <- Region_8
-                                  })
-
+        
+        province_region <- read_excel("data_demand_forecast/glossary.xlsx", sheet = "region")
+        historical_data_source <- merge(province_region, historical_data_source, all.x = TRUE, by = "Province", sort = TRUE)
 
 # End ---------------------------------------------------------------------
     # write data
