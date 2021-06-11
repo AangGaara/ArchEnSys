@@ -135,14 +135,14 @@ setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys"
 
 # Energy intensity data ---------------------------------------------------
 # extract primary energy (national) from ourworldindata.org 
-        energy_intensity           <- read_csv("data_demand_forecast/energy/primary-energy-cons.csv", col_names = TRUE)
+        energy_intensity           <- read_csv("data_demand_forecast/energy/primary-energy-cons.csv", col_names = TRUE) #read energy consumption of Indonesia in TWh
         energy_intensity           <- subset(energy_intensity, energy_intensity$Entity == "Indonesia" & energy_intensity$Year > 2009)
         names(energy_intensity)[1] <- "Province"
         names(energy_intensity)[3] <- "year"
         names(energy_intensity)[4] <- "twh_cons"
         energy_intensity[2]        <- NULL
         energy_intensity$Province  <- toupper(energy_intensity$Province)
-        energy_intensity$MJ        <- energy_intensity$twh_cons * 3600000000
+        energy_intensity$MJ        <- energy_intensity$twh_cons * 3600000000 # convert TWh to MJ
         
 # extract national GDP
         # from GDPR (billion IDR)
@@ -262,9 +262,9 @@ setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys"
 # electricity consumption per capita (kWh) = dist electricty (gWh) / population
 # calculation using distributed electricity, instead of generated as there are areas without electricity generation facilities
         
-        gwh_consumption_percap                 <- merge(dist_gwh_2011_2019, population_data)
-        gwh_consumption_percap$gwh_cons_percap <- 1e+6 * gwh_consumption_percap$dist_gwh / gwh_consumption_percap$population
-        gwh_consumption_percap[3:4]            <- NULL
+        kwh_consumption_percap                 <- merge(dist_gwh_2011_2019, population_data)
+        kwh_consumption_percap$kwh_dem_percap  <- 1e+6 * kwh_consumption_percap$dist_gwh / kwh_consumption_percap$population
+        kwh_consumption_percap[3:4]            <- NULL
         
         
 # Installed capacity ------------------------------------------------------
@@ -297,7 +297,7 @@ setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys"
         historical_data_source <- merge(historical_data_source, population_data,       by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, gen_gwh_2011_2019,     by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, dist_gwh_2011_2019,    by = c("Province","year"), sort = FALSE)
-        historical_data_source <- merge(historical_data_source, gwh_consumption_percap,by = c("Province","year"), sort = FALSE)
+        historical_data_source <- merge(historical_data_source, kwh_consumption_percap,by = c("Province","year"), sort = FALSE)
         historical_data_source <- merge(historical_data_source, capacity_2011_2019,    By = c("Province","year"), sort = FALSE)
 
 # assign energy intensity to the main data

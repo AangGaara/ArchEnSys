@@ -22,7 +22,7 @@ vis_dataset <- vis_dataset[]
 p1 <- ggplot(vis_dataset, 
              aes(year, dist_gwh, colour = Province)) +
   geom_line()
-p1
+p1 + xlim(2011,2019)
 
 highchart() %>% 
 # hc_add_series(data = vis_dataset$year) %>% 

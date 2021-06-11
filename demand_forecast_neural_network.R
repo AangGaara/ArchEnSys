@@ -9,7 +9,7 @@ setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys"
 source("demand_forecast_historical_data_source.R")
 #nn_dataset <- historical_data_source
 
-#remove indonesia
+#predict indonesia
     nn_dataset <- historical_data_source[historical_data_source$Province =="INDONESIA",]
 
 
@@ -43,15 +43,14 @@ source("demand_forecast_historical_data_source.R")
     test_dataset    <- maxmindf[(train_obs_size+1):nrow(maxmindf),]
 
 # fit neural network
-number_of_variables <- ncol(train_dataset)
 #nn <- neuralnet(dist_gwh ~ year + gdpr_billion_idr + gdpr_growth + population + intensity_biased,
 #                data = train_dataset,
 #                hidden = c(ncol(train_dataset), ncol(train_dataset), ncol(train_dataset), ncol(train_dataset)),
 #                act.fct = "logistic",
 #                linear.output = TRUE)
-nn <- neuralnet(dist_gwh ~ year + gdpr_billion_idr + gdpr_growth + population + gwh_cons_percap + intensity_biased,
+nn <- neuralnet(dist_gwh ~ year + gdpr_billion_idr + gdpr_growth + population + kwh_dem_percap + intensity_biased,
                 data = train_dataset,
-                hidden = c(ncol(train_dataset), ncol(train_dataset)-1),
+                hidden = c(ncol(train_dataset), ncol(train_dataset), ncol(train_dataset)),
                 stepmax = 1e+5,
                 act.fct = "logistic",
                 linear.output = TRUE)
