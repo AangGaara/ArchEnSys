@@ -2,17 +2,18 @@ library(shiny)
 library(shinythemes)
 library(readxl)
 library(networkD3)
-library(ggplot2)
 
-ui <- fluidPage(
-  titlePanel("Data for Long Term Energy Forecast"),
-  fluidRow(
-    column(4,
-           selectInput("Prov",
-                       "Province:",
-                       c("All,
-                         unique(as.character(historical_data_")))
-  )
+ui <- fluidPage(theme = shinytheme("superhero"),
+                navbarPage("ArchEnSys",
+                #tabPanel("General Data","Blank"),
+                tabPanel("Demand",
+                         "Peak MW, Proyeksi Penjualan, Proyeksi Demand"),
+                tabPanel("Supply","Blank"),
+                tabPanel("Energy Resource","Blank"),
+                tabPanel("Energy Flow","Blank"),
+                tabPanel("Costs","Blank"),
+                tabPanel("GHG Footprint","Blank")
+                )
 )
 
 server <- function (input,output){

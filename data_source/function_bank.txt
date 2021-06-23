@@ -1,0 +1,46 @@
+'
+' Solve_2038 Macro
+'
+
+    SolverReset
+    SolverOk SetCell:="$BD$71", MaxMinVal:=2, ValueOf:=0, ByChange:="$W$23:$AH$23", _
+        Engine:=1, EngineDesc:="GRG Nonlinear"
+    SolverAdd CellRef:="$Q$47", Relation:=2, FormulaText:="$R$47"
+    SolverAdd CellRef:="$D$47:$O$47", Relation:=3, FormulaText:="0"
+    SolverAdd CellRef:="$BD$71", Relation:=3, FormulaText:="0"
+    SolverAdd CellRef:="$AA$23:$AG$23", Relation:=1, FormulaText:="$AU$23:$BA$23"
+    SolverAdd CellRef:="$BO$47", Relation:=3, FormulaText:="$BN$47"
+    SolverAdd CellRef:="$AQ$47", Relation:=3, FormulaText:="$AW$47"
+    SolverAdd CellRef:="$AR$47", Relation:=3, FormulaText:="$AX$47"
+    SolverAdd CellRef:="$AS$47", Relation:=1, FormulaText:="$AY$47"
+    SolverAdd CellRef:="$AT$47", Relation:=3, FormulaText:="$AZ$47"
+    SolverAdd CellRef:="$BR$47", Relation:=3, FormulaText:="$BQ$47"
+    SolverAdd CellRef:="$BU$47", Relation:=3, FormulaText:="$BT$47"
+    SolverAdd CellRef:="$BX$47", Relation:=1, FormulaText:="$BW$47"
+    SolverAdd CellRef:="$AK$71", Relation:=1, FormulaText:="$AL$71"
+    SolverOk SetCell:="$BD$71", MaxMinVal:=2, ValueOf:=0, ByChange:="$W$23:$AH$23", _
+        Engine:=1, EngineDesc:="GRG Nonlinear"
+    SolverOk SetCell:="$BD$71", MaxMinVal:=2, ValueOf:=0, ByChange:="$W$23:$AH$23", _
+        Engine:=1, EngineDesc:="GRG Nonlinear"
+    SolverSolve userFinish:=True
+
+SolverAdd CellRef:="$CA$29", Relation:=3, FormulaText:="$BZ$29"
+SolverAdd CellRef:="$CA$30", Relation:=3, FormulaText:="$BZ$30"
+SolverAdd CellRef:="$CA$31", Relation:=3, FormulaText:="$BZ$31"
+SolverAdd CellRef:="$CA$32", Relation:=3, FormulaText:="$BZ$32"
+SolverAdd CellRef:="$CA$33", Relation:=3, FormulaText:="$BZ$33"
+SolverAdd CellRef:="$CA$34", Relation:=3, FormulaText:="$BZ$34"
+SolverAdd CellRef:="$CA$35", Relation:=3, FormulaText:="$BZ$35"
+SolverAdd CellRef:="$CA$36", Relation:=3, FormulaText:="$BZ$36"
+SolverAdd CellRef:="$CA$37", Relation:=3, FormulaText:="$BZ$37"
+SolverAdd CellRef:="$CA$38", Relation:=3, FormulaText:="$BZ$38"
+SolverAdd CellRef:="$CA$39", Relation:=3, FormulaText:="$BZ$39"
+SolverAdd CellRef:="$CA$40", Relation:=3, FormulaText:="$BZ$40"
+SolverAdd CellRef:="$CA$41", Relation:=3, FormulaText:="$BZ$41"
+SolverAdd CellRef:="$CA$42", Relation:=3, FormulaText:="$BZ$42"
+SolverAdd CellRef:="$CA$43", Relation:=3, FormulaText:="$BZ$43"
+SolverAdd CellRef:="$CA$44", Relation:=3, FormulaText:="$BZ$44"
+SolverAdd CellRef:="$CA$45", Relation:=3, FormulaText:="$BZ$45"
+SolverAdd CellRef:="$CA$46", Relation:=3, FormulaText:="$BZ$46"
+SolverAdd CellRef:="$CA$47", Relation:=3, FormulaText:="$BZ$47"
+
