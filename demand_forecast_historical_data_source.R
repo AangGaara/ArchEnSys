@@ -1,6 +1,7 @@
 library(readxl)
 library(tidyverse)
-setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #set working directory to this script's location
 
 # Real GDP data ------------------------------------------------------------
 # all in billion rupiah
@@ -314,8 +315,33 @@ setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys"
         
         province_region <- read_excel("data_demand_forecast/glossary.xlsx", sheet = "region")
         historical_data_source <- merge(province_region, historical_data_source, all.x = TRUE, by = "Province", sort = TRUE)
+        
+        
+
+# Summarise ---------------------------------------------------------------
+
+        his_dat <- historical_data_source
+        his_dat$Province <- NULL
+        his_dat_mean <- his_dat %>% 
+          group_by(region, year) %>% 
+          summarise(across(c(gdpr_growth,
+                             intensity_biased),mean)) 
+        his_dat_sum <- his_dat %>% 
+          group_by(region, year) %>% 
+          summarise(across(c(gdpr_billion_idr,
+                             population,
+                             gen_gwh,
+                             dist_gwh,
+                             capacity_mw),sum)) 
+        
+        his_dat <- merge(his_dat_mean, his_dat_sum, by = c("region", "year"), sort = FALSE)
+        his_dat$gdpr_percap_thousand_idr <- 1000000 * his_dat$gdpr_billion_idr / his_dat$population
+        his_dat$kwh_dem_percap          <- 1000000 * his_dat$dist_gwh / his_dat$population
 
 # End ---------------------------------------------------------------------
     # write data
     # write_csv(historical_data_source, "data_demand_forecast/forecast_data_source.csv") #whole data
+        
+        
+        
 

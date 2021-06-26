@@ -2,7 +2,8 @@ library(readxl)
 library(tidyverse)
 library(reshape2)
 library(data.table)
-setwd("C:/Users/Brajamusthi/OneDrive/Master of Energy Research/Github/ArchEnSys")
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #set working directory to this script's location
 
 province_code <- read_excel("data_demand_forecast/glossary.xlsx", 
                             sheet = "code")
@@ -121,17 +122,37 @@ province_code <- read_excel("data_demand_forecast/glossary.xlsx",
   }
 
 # Create projection dataset -----------------------------------------------
+  colnames(aprojection_data_source)
   projection_dataset <- aprojection_data_source[c('Province',
                                                   'year',
+                                                  'electricity_demand_gwh',
                                                   'gdpr_billion_idr',
                                                   'gdpr_growth',
                                                   'population',
                                                   'kwh_dem_percap',
                                                   'intensity_biased',
-                                                  'electricity_demand_twh')]
-
-
+                                                  'electricity_demand_gwh')]
+  # assign region
+  province_region <- read_excel("data_demand_forecast/glossary.xlsx", sheet = "region")
+  projection_dataset <- merge(province_region, projection_dataset, all.x = TRUE, by = "Province", sort = TRUE)
   
-
+  #summarise
+  proj_dat <- projection_dataset
+  proj_dat$Province <- NULL
+  proj_dat_mean <- proj_dat %>% 
+    group_by(region, year) %>% 
+    summarise(across(c(gdpr_growth,
+                       intensity_biased,
+                       kwh_dem_percap),mean)) 
+  proj_dat_sum <- proj_dat %>% 
+    group_by(region, year) %>% 
+    summarise(across(c(electricity_demand_gwh,
+                       gdpr_billion_idr,
+                       population),sum)) 
+  
+  proj_dat <- merge(proj_dat_mean, proj_dat_sum, by = c("region", "year"), sort = FALSE)
+  proj_dat$gdpr_percap_thousand_idr <- 1000000 * proj_dat$gdpr_billion_idr / proj_dat$population
+  proj_dat <- subset(proj_dat, year!= "2019")
+  
 
 
