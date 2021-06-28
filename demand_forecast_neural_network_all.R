@@ -39,14 +39,14 @@ percent_data   = 1
                             stepmax = 1e+5,
                             act.fct = "logistic",
                             linear.output = TRUE)
-            # plot(ind_nn, rep = "best",
-            #      arrow.length = 0.15,
-            #      col.entry  ="blue",
-            #      col.hidden ="red",
-            #      col.out    ="blue",
-            #      show.weights = TRUE,
-            #      information  = TRUE,
-            #      fontsize = 10)
+            plot(ind_nn, rep = "best",
+                 arrow.length = 0.15,
+                 col.entry  ="blue",
+                 col.hidden ="red",
+                 col.out    ="blue",
+                 show.weights = TRUE,
+                 information  = TRUE,
+                 fontsize = 10)
             
             #test the model to the training data
             ind_predict = neuralnet::compute(ind_nn, ind_train_dataset)
@@ -61,6 +61,8 @@ percent_data   = 1
                                                                                            'error_percent',
                                                                                            'region',
                                                                                            'year'))
+            
+            #write.table(ind_results_denorm, "clipboard", sep="\t", row.names=FALSE) # copy to clipboard
             
 
 # Sumatera ----------------------------------------------------------------
