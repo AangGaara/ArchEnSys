@@ -218,7 +218,7 @@ options(scipen = 999, digits = 2) # avoid scientific notations
 # cost (million USD) ------------------------------------------------------
 
   cost_plot <- 
-    subset(cost_musd, region != 'INDONESIA') %>% 
+    subset(cost_musd, region == 'INDONESIA') %>% 
     subset(select = -c(total)) %>% 
     pivot_longer(cols= 3:15, names_to = "source", values_to = "cost_musd") %>% 
     ggplot(aes(year, cost_musd, fill = source)) +
